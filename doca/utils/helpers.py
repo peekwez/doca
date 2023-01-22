@@ -1,6 +1,7 @@
 import os
 import sys
 import uuid
+import time
 
 from typing import Any
 
@@ -18,7 +19,11 @@ def getenv(env_name: str, default_value: str = None) -> str:
 
 
 def new_guid() -> str:
-    return uuid.uuid4()
+    return uuid.uuid4().hex
+
+
+def time_ns() -> int:
+    return time.time_ns()
 
 
 def get_size(data: bytes) -> int:

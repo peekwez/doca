@@ -5,7 +5,7 @@ exec(open("doca/version.py").read())
 setup(
     name="doca",
     version=__version__,
-    url="https://git-codecommit.ca-central-1.amazonaws.com/v1/repos/docex",
+    url="git@github.com:peekwez/doca.git",
     author="Kwesi P Apponsah",
     author_email="kwesi@kwap-consulting.com",
     packages=find_packages(exclude=["tests", "tests.*"]),
@@ -24,7 +24,7 @@ setup(
     ],
     entry_points={
         "console_scripts": [
-            "docex=doca.cmd:cli"
+            "doca=doca.cmd:cli"
         ]
     },
     extras_require={
