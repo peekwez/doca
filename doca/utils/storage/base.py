@@ -1,16 +1,8 @@
 import abc
-from enum import StrEnum, auto
 from typing import Any
 
 from ..logging import get_class_logger
 from ..document import Document
-
-
-class StorageProvider(StrEnum):
-    aws_s3 = auto()
-    gcp_cloud_storage = auto()
-    azure_blob_storage = auto()
-    local_file_system = auto()
 
 
 class BaseStorageLayer(abc.ABC):

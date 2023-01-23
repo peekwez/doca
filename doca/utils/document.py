@@ -4,7 +4,7 @@ import os
 from enum import StrEnum, auto
 from pydantic import BaseModel, Field
 
-from .storage.base import StorageProvider
+from .providers import StorageProvider
 from .helpers import get_bucket_name, get_processor_name
 
 
@@ -57,17 +57,15 @@ class Document(BaseModel):
         fields = {'document_buffer': {'exclude': True}}
 
     @property
-    def file_path(self) -> str:
+    def document_path(self) -> str:
         suffix = "_{0.processor_name}".format(
             self) if self.processor_name else ""
         return f"{self.document_owner}/{self.document_name}{suffix}.{self.document_format}"
 
     @property
-    def mime_type(self) -> str:
-        return self.document_format.mime_type
-
-    @property
     def content(self) -> bytes:
+        if not self.document_buffer:
+            return None
         return self.document_buffer.getvalue()
 
     def add_content(self, bytes) -> None:
