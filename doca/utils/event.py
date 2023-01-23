@@ -8,6 +8,7 @@ from .helpers import new_guid, time_ns
 
 
 class EventType(StrEnum):
+    DOCUMENT_CREATED = "document-created"
     DOCUMENT_INGESTED = "document-ingested"
     DOCUMENT_ANALYZED = "document-analyzed"
     DOCUMENT_PROCESSED = "document-processed"
