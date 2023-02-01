@@ -2,7 +2,6 @@ import abc
 from typing import Any
 
 from ..logging import get_class_logger
-from ..document import Document
 
 
 class BaseStorageLayer(abc.ABC):
@@ -18,7 +17,7 @@ class BaseStorageLayer(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def list(self, bucket_name: str, prefix: str, delimiter: str = None) -> list:
+    def list(self, storage_bucket: str, prefix: str, delimiter: str = None) -> list:
         pass
 
     @abc.abstractmethod
@@ -26,13 +25,13 @@ class BaseStorageLayer(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_object(self, doc: Document) -> Any:
+    def get_object(self, storage_bucket: str, document_path: str) -> Any:
         pass
 
     @abc.abstractmethod
-    def read(self, doc: Document) -> Document:
+    def read(self, storage_bucket: str, document_path: str) -> bytes:
         pass
 
     @abc.abstractmethod
-    def write(self, doc: Document) -> bool:
+    def write(self, content: bytes, mime_type: str, storage_bucket: str, document_path: str) -> None:
         pass

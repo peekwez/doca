@@ -5,6 +5,7 @@ from enum import StrEnum, auto
 from pydantic import BaseModel, Field
 
 from .providers import StorageProvider
+from .storage import BaseStorageLayer
 from .helpers import get_bucket_name, get_processor_name
 
 
@@ -57,6 +58,10 @@ class Document(BaseModel):
         fields = {'document_buffer': {'exclude': True}}
 
     @property
+    def mime_type(self) -> str:
+        return self.document_format.mime_type
+
+    @property
     def document_path(self) -> str:
         suffix = "_{0.processor_name}".format(
             self) if self.processor_name else ""
@@ -68,8 +73,17 @@ class Document(BaseModel):
             return None
         return self.document_buffer.getvalue()
 
-    def add_content(self, bytes) -> None:
-        self.document_buffer = io.BytesIO(bytes)
+    def save(self, store: BaseStorageLayer):
+        store.write(
+            self.content, self.mime_type,
+            self.storage_bucket, self.document_path
+        )
+
+    def read(self, store: BaseStorageLayer):
+        content = store.read(
+            self.storage_bucket, self.document_path
+        )
+        self.document_buffer = io.BytesIO(content)
 
 
 def new_document(
