@@ -7,8 +7,8 @@ from ..providers import StorageProvider
 from .base import BaseStorageLayer
 
 
-class GCPCloudStorage(BaseStorageLayer):
-    name = StorageProvider.gcp_cloud_storage
+class GoogleCloudStorage(BaseStorageLayer):
+    name = StorageProvider.google_cloud_storage
 
     def setup(self):
         bucket_name = get_bucket_name()

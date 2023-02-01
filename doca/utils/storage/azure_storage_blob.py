@@ -1,4 +1,4 @@
-from azure.storage.blob import BlobServiceClient, ContentSettings, BlobClient
+from azure.storage.blob import BlobServiceClient, ContentSettings
 from azure.core import exceptions
 
 from ..helpers import get_bucket_name, getenv

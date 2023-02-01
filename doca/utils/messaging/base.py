@@ -7,7 +7,7 @@ from ..logging import get_class_logger
 class BaseMessageLayer(abc.ABC):
     name: None
 
-    def __init__(self, consume_queue: str, publish_queue: str, debug: bool = False):
+    def __init__(self, consume_queue: str = None, publish_queue: str = None, debug: bool = False):
         self._log = get_class_logger(self)
         self._consume_queue = consume_queue
         self._publish_queue = publish_queue
