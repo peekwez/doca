@@ -5,7 +5,7 @@ from ..providers import StorageProvider
 from .base import BaseStorageLayer
 
 
-class S3StorageLayer(BaseStorageLayer):
+class AWSSimpleStorageService(BaseStorageLayer):
     name = StorageProvider.aws_s3
 
     def setup(self):

@@ -6,7 +6,7 @@ from ..providers import MessageProvider
 from .base import BaseMessageLayer
 
 
-class SQSMessageLayer(BaseMessageLayer):
+class AWSSimpleQueueService(BaseMessageLayer):
     name = MessageProvider.aws_sqs
 
     def setup(self) -> None:

@@ -6,7 +6,7 @@ from ..providers import StorageProvider
 from .base import BaseStorageLayer
 
 
-class CloudStorageLayer(BaseStorageLayer):
+class AzureStorageBlob(BaseStorageLayer):
     name = StorageProvider.azure_storage_blob
 
     def setup(self):

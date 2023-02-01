@@ -1,2 +1,2 @@
 from .base import BaseMessageLayer
-from .aws_sqs import SQSMessageLayer
+from .aws_sqs import AWSSimpleQueueService

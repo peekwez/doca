@@ -2,7 +2,6 @@ import abc
 from typing import Callable
 
 from ..logging import get_class_logger
-from ..event import EventRecord
 
 
 class BaseMessageLayer(abc.ABC):
@@ -24,5 +23,5 @@ class BaseMessageLayer(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def publish(self, record: EventRecord) -> None:
+    def publish(self, body: bytes) -> None:
         pass
