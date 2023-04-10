@@ -1,3 +1,4 @@
+from typing import Iterable
 from azure.storage.blob import BlobServiceClient, ContentSettings
 from azure.core import exceptions
 
@@ -7,7 +8,7 @@ from .base import BaseStorageLayer
 
 
 class AzureStorageBlob(BaseStorageLayer):
-    name = StorageProvider.azure_storage_blob
+    name: StorageProvider = StorageProvider.azure_storage_blob
 
     def setup(self):
         bucket_name = get_bucket_name()
@@ -22,7 +23,7 @@ class AzureStorageBlob(BaseStorageLayer):
         finally:
             self._log.info("Storage Blob initialized...")
 
-    def list(self, storage_bucket: str, prefix: str, delimiter: str = None) -> list:
+    def list(self, storage_bucket: str, prefix: str, delimiter: str | None = None) -> Iterable:
         container = self._client.get_container_client(storage_bucket)
         props = container.list_blobs(name_starts_with=prefix)
         for prop in props:
@@ -38,7 +39,7 @@ class AzureStorageBlob(BaseStorageLayer):
         obj = self.get_object(storage_bucket, document_path)
         return self.download(obj)
 
-    def write(self, content: bytes, mime_type: str, storage_bucket: str, document_path: str) -> None:
+    def write(self, content: bytes, mime_type: str | None, storage_bucket: str, document_path: str) -> None:
         obj = self.get_object(storage_bucket, document_path)
         obj.upload_blob(
             content, content_settings=ContentSettings(mime_type), overwrite=True)

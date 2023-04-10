@@ -11,7 +11,7 @@ from .base import BaseMessageLayer
 
 
 class AzureStorageQueue(BaseMessageLayer):
-    name = MessageProvider.azure_storage_queue
+    name: MessageProvider = MessageProvider.azure_storage_queue
 
     def setup(self) -> None:
         if self._consume_queue:
@@ -38,12 +38,12 @@ class AzureStorageQueue(BaseMessageLayer):
             self._log.info("Storage queue client initialized...")
         return client
 
-    def consume(self, callback: Callable[[str, bytes], None]) -> None:
+    def consume(self, callback: Callable[[str | bytes], None]) -> None:
         while True:
             messages = self.consumer.receive_messages()
             for message in messages:
                 callback(message.content.decode("utf-8"))
                 self.consumer.delete_message(message.id, message.pop_receipt)
 
-    def publish(self, body: bytes) -> None:
-        self.publisher.send_message(body)
+    def publish(self, body: str) -> None:
+        self.publisher.send_message(body.encode("utf-8"))

@@ -1,4 +1,5 @@
-from google.cloud import storage
+from typing import Iterable
+from google.cloud import storage  # type: ignore
 from google.cloud.storage.constants import PUBLIC_ACCESS_PREVENTION_ENFORCED
 from google.api_core import exceptions
 
@@ -8,7 +9,7 @@ from .base import BaseStorageLayer
 
 
 class GoogleCloudStorage(BaseStorageLayer):
-    name = StorageProvider.google_cloud_storage
+    name: StorageProvider = StorageProvider.google_cloud_storage
 
     def setup(self):
         bucket_name = get_bucket_name()
@@ -26,7 +27,7 @@ class GoogleCloudStorage(BaseStorageLayer):
         finally:
             self._log.info("Cloud Storage initialized...")
 
-    def list(self, storage_bucket: str, prefix: str, delimiter: str = None) -> list:
+    def list(self, storage_bucket: str, prefix: str, delimiter: str | None = None) -> Iterable:
         return self._client.list_blobs(storage_bucket, prefix=prefix, delimiter=delimiter)
 
     def download(self, obj) -> bytes:
@@ -40,6 +41,6 @@ class GoogleCloudStorage(BaseStorageLayer):
         obj = self.get_object(storage_bucket, document_path)
         return self.download(obj)
 
-    def write(self, content: bytes, mime_type: str, storage_bucket: str, document_path: str) -> None:
+    def write(self, content: bytes, mime_type: str | None, storage_bucket: str, document_path: str) -> None:
         obj = self.get_object(storage_bucket, document_path)
         obj.upload_from_string(content, mime_type)

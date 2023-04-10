@@ -50,7 +50,7 @@ class Document(BaseModel):
     processor_name: str = Field(default_factory=get_processor_name)
     document_owner: str
     document_name: str
-    document_format: DocumentFormat
+    document_format: DocumentFormat | None
     document_buffer: io.BytesIO | None
 
     class Config:
@@ -58,7 +58,9 @@ class Document(BaseModel):
         fields = {'document_buffer': {'exclude': True}}
 
     @property
-    def mime_type(self) -> str:
+    def mime_type(self) -> str | None:
+        if not self.document_format:
+            return None
         return self.document_format.mime_type
 
     @property
@@ -70,43 +72,17 @@ class Document(BaseModel):
     @property
     def content(self) -> bytes:
         if not self.document_buffer:
-            return None
+            return b""
         return self.document_buffer.getvalue()
 
-    def save(self, store: BaseStorageLayer):
+    def save_to_store(self, store: BaseStorageLayer) -> None:
         store.write(
             self.content, self.mime_type,
             self.storage_bucket, self.document_path
         )
 
-    def read(self, store: BaseStorageLayer):
+    def load_from_store(self, store: BaseStorageLayer) -> None:
         content = store.read(
             self.storage_bucket, self.document_path
         )
         self.document_buffer = io.BytesIO(content)
-
-
-def new_document(
-    storage_provider: StorageProvider,
-    document_owner: str,
-    document_name: str,
-    document_format: DocumentFormat = None,
-    document_content: bytes = None
-) -> Document:
-
-    if not document_format:
-        name, ext = os.path.splitext(document_name)
-        document_name = name
-        document_format = ext if ext == "" else ext[1:]
-
-    document_buffer = None
-    if document_content:
-        document_buffer = io.BytesIO(document_content)
-
-    return Document(
-        storage_provider=storage_provider,
-        document_owner=document_owner,
-        document_name=document_name,
-        document_format=document_format,
-        document_buffer=document_buffer
-    )

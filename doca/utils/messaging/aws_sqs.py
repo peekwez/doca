@@ -6,7 +6,7 @@ from .base import BaseMessageLayer
 
 
 class AWSSimpleQueueService(BaseMessageLayer):
-    name = MessageProvider.aws_sqs
+    name: MessageProvider = MessageProvider.aws_sqs
 
     def setup(self) -> None:
         self.__sqs = boto3.resource("sqs")
@@ -29,7 +29,7 @@ class AWSSimpleQueueService(BaseMessageLayer):
             self._log.info("SQS queue client initialized...")
         return client
 
-    def consume(self, callback: Callable[[str, bytes], None]) -> None:
+    def consume(self, callback: Callable[[str | bytes], None]) -> None:
         while True:
             messages = self.consumer.receive_messages(
                 MaxNumberOfMessages=10, WaitTimeSeconds=1)
@@ -37,5 +37,5 @@ class AWSSimpleQueueService(BaseMessageLayer):
                 callback(message.data)
                 message.delete()
 
-    def publish(self, body: bytes) -> None:
+    def publish(self, body: str) -> None:
         self.publisher.send_message(MessageBody=body, MessageAttributes={})

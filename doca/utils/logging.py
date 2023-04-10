@@ -1,5 +1,5 @@
 import logging
-from typing import Callable
+from .typing import ResourceType
 
 LOG_FORMAT = "[%(asctime)s] [%(process)s] [%(levelname)s] [%(name)s]: %(message)s"
 
@@ -16,7 +16,3 @@ def get_logger(name: str = "Document Analysis", log_level: int = logging.INFO) -
     log.addHandler(ch)
 
     return log
-
-
-def get_class_logger(cls: Callable) -> logging.Logger:
-    return get_logger(cls.__class__.__name__)

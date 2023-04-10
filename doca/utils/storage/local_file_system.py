@@ -1,16 +1,16 @@
 import os
 from glob import glob
-from enum import Enum
+from enum import StrEnum
 from pathlib import Path
 
-from typing import List, Any
+from typing import Iterable, List, Any
 
 from ..helpers import get_bucket_name, getenv
 from ..providers import StorageProvider
 from .base import BaseStorageLayer
 
 
-class FileMode(str, Enum):
+class FileMode(StrEnum):
     RB = "rb"
     WB = "wb"
 
@@ -36,7 +36,7 @@ class FileObject:
 
 
 class LocalFileSystem(BaseStorageLayer):
-    name = StorageProvider.local_file_system
+    name: StorageProvider = StorageProvider.local_file_system
 
     def setup(self):
         self.__home = getenv("LOCAL_STORAGE_PATH")
@@ -50,7 +50,7 @@ class LocalFileSystem(BaseStorageLayer):
         finally:
             self._log.info("File system store initialized...")
 
-    def list(self, storage_bucket: str, prefix: str, delimiter: str = None) -> List[Any]:
+    def list(self, storage_bucket: str, prefix: str, delimiter: str | None = None) -> Iterable:
         if prefix == "":
             prefix = "*"
         path_ = f"{self.__home}/{storage_bucket}/{prefix}/*"
@@ -69,6 +69,6 @@ class LocalFileSystem(BaseStorageLayer):
         obj = self.get_object(storage_bucket, document_path)
         return self.download(obj)
 
-    def write(self, content: bytes, mime_type: str, storage_bucket: str, document_path: str) -> None:
+    def write(self, content: bytes, mime_type: str | None, storage_bucket: str, document_path: str) -> None:
         obj = self.get_object(storage_bucket, document_path)
         obj.put(content)

@@ -1,14 +1,14 @@
 import abc
 from typing import Callable
 
-from ..logging import get_class_logger
+from ..logging import get_logger
 
 
 class BaseMessageLayer(abc.ABC):
     name: None
 
-    def __init__(self, consume_queue: str = None, publish_queue: str = None, debug: bool = False):
-        self._log = get_class_logger(self)
+    def __init__(self, consume_queue: str | None = None, publish_queue: str | None = None, debug: bool = False):
+        self._log = get_logger(self.__class__.__name__)
         self._consume_queue = consume_queue
         self._publish_queue = publish_queue
         if not debug:
@@ -23,5 +23,5 @@ class BaseMessageLayer(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def publish(self, body: bytes) -> None:
+    def publish(self, body: str) -> None:
         pass

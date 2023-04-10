@@ -6,7 +6,7 @@ from .base import BaseStorageLayer
 
 
 class AWSSimpleStorageService(BaseStorageLayer):
-    name = StorageProvider.aws_s3
+    name: StorageProvider = StorageProvider.aws_s3
 
     def setup(self):
         self._s3 = boto3.resource("s3")
@@ -21,10 +21,10 @@ class AWSSimpleStorageService(BaseStorageLayer):
         finally:
             self._log.info(f"AWS S3 storage layer initialized...")
 
-    def list(self, storage_bucket: str, prefix: str, delimiter: str = None) -> list:
+    def list(self, storage_bucket: str, prefix: str, delimiter: str | None = None) -> list:
         bucket = self._s3.Bucket(storage_bucket)
         objects = list(bucket.objects.filter(Prefix=prefix))
-        return filter(lambda x: x.key != f"{prefix}/", objects)
+        return list(filter(lambda x: x.key != f"{prefix}/", objects))
 
     def download(self, obj) -> bytes:
         return obj.get()["Body"].read()
@@ -36,6 +36,6 @@ class AWSSimpleStorageService(BaseStorageLayer):
         obj = self.get_object(storage_bucket, document_path)
         return self.download(obj)
 
-    def write(self, content: bytes, mime_type: str, storage_bucket: str, document_path: str) -> None:
+    def write(self, content: bytes, mime_type: str | None, storage_bucket: str, document_path: str) -> None:
         obj = self.get_object(storage_bucket, document_path)
         obj.put(Body=content, ContentType=mime_type)

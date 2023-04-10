@@ -21,8 +21,7 @@ class EventRecord(BaseModel):
     timestamp_ns: int = Field(default_factory=time_ns)
 
     def publish(self, messenger: BaseMessageLayer) -> None:
-        messenger.publish(self.json().encode("uft-8"))
+        messenger.publish(self.json())
 
-
-def new_event(event: EventType, payload: list[Document]) -> EventRecord:
-    return EventRecord(event=event, payload=payload)
+    class Config:
+        arbitrary_types_allowed = True

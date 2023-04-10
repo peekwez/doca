@@ -3,12 +3,12 @@ import sys
 import uuid
 import time
 
-from typing import Any
+from typing import Any, Iterable
 
 from . import exceptions as exc
 
 
-def getenv(env_name: str, default_value: str = None) -> str:
+def getenv(env_name: str, default_value: str | None = None) -> str:
     try:
         return os.environ[env_name]
     except KeyError:
@@ -30,7 +30,7 @@ def get_size(data: bytes) -> int:
     return sys.getsizeof(data)
 
 
-def chunk_list(lst: list[Any], n: int) -> list[list[Any]]:
+def chunk_list(lst: list[Any], n: int) -> Iterable:
     for i in range(0, len(lst), n):
         yield lst[i:i + n]
 

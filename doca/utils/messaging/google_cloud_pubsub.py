@@ -1,6 +1,6 @@
 import json
 
-from google.cloud import pubsub_v1
+from google.cloud import pubsub_v1 # type: ignore
 from google.api_core import exceptions, retry
 
 from typing import Callable, Any
@@ -11,7 +11,7 @@ from .base import BaseMessageLayer
 
 
 class GoogleCloudPubSub(BaseMessageLayer):
-    name = MessageProvider.google_cloud_pubsub
+    name: MessageProvider = MessageProvider.google_cloud_pubsub
 
     def setup(self) -> None:
         with open(getenv("GOOGLE_APPLICATION_CREDENTIALS"), "r") as f:
@@ -58,13 +58,13 @@ class GoogleCloudPubSub(BaseMessageLayer):
             self._log.info("Cloud PubSub client initialized...")
         return client
 
-    def consume(self, callback: Callable[[str, bytes], None]) -> None:
+    def consume(self, callback: Callable[[str | bytes], None]) -> None:
         NUM_MESSAGES = 10
         subscriber_path = self.consumer.subscription_path(
             self.__project_id, self._consume_queue)
         with self.consumer:
             while True:
-                response = self.con.pull(
+                response = self.consumer.pull(
                     request=dict(subscription=subscriber_path,
                                  max_messages=NUM_MESSAGES),
                     retry=retry.Retry(deadline=300)
@@ -79,8 +79,8 @@ class GoogleCloudPubSub(BaseMessageLayer):
                                    ack_ids=ack_ids)
                     self.consumer.acknowledge(request=request)
 
-    def publish(self, body: bytes) -> None:
+    def publish(self, body: str) -> None:
         topic_path = self.publisher.topic_path(
             self.__project_id, self._publish_queue)
-        future = self.pub.publish(topic_path, body)
+        future = self.publisher.publish(topic_path, body.encode("utf-8"))
         future.result(timeout=30)
