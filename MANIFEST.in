@@ -1,0 +1,6 @@
+include README.md
+include LICENSE
+include Make.in
+include Makefile 
+include pytest.ini
+include doca.sh
